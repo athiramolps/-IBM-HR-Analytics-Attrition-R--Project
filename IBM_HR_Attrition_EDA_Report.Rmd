@@ -1,0 +1,165 @@
+---
+title: "IBM HR Analytics - Employee Attrition EDA"
+author: "Athiramol PS"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## 🧭 Project Title: IBM HR Analytics — Exploratory Data Analysis (EDA)
+
+### 🎯 Objective  
+The goal of this project is to explore the IBM HR Analytics dataset to understand the factors that influence **employee attrition** — that is, why employees leave the company.  
+By analyzing patterns and relationships in the data, HR teams can take proactive measures to improve employee retention and job satisfaction.
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(scales)
+```
+
+---
+
+## 📊 **Univariate Analysis**
+
+### 🔹 1. Age Distribution
+**Question:** What is the age distribution of employees?
+
+```{r}
+hist(data$Age,
+     col = "skyblue",
+     main = "Age Distribution of Employees",
+     xlab = "Age")
+```
+
+**Insight:**  
+Most employees are between **30 and 40 years old**. Few are younger than 25 or older than 55, suggesting a workforce dominated by mid-career professionals.
+
+---
+
+### 🔹 2. Attrition Count (Yes / No)
+**Question:** What proportion of employees have left the company?
+
+```{r}
+barplot(table(data$Attrition),
+        col = c("lightgreen", "salmon"),
+        main = "Attrition Count (Yes / No)",
+        ylab = "Number of Employees")
+```
+
+**Insight:**  
+The majority of employees have **not left** (Attrition = No). Around **15–20%** have left, indicating a moderate turnover rate.
+
+---
+
+### 🔹 3. Employee Count by Department
+**Question:** How are employees distributed across departments?
+
+```{r}
+ggplot(data, aes(x = Department)) +
+  geom_bar(fill = "orange") +
+  labs(title = "Employee Count by Department", x = "Department", y = "Count")
+```
+
+**Insight:**  
+The **Research & Development** department has the highest number of employees, followed by **Sales**. The **Human Resources** department has the fewest employees.
+
+---
+
+## 🔗 **Bivariate Analysis**
+
+### 🔹 4. Age vs Attrition
+**Question:** Does age influence employee attrition?
+
+```{r}
+boxplot(Age ~ Attrition,
+        data = data,
+        col = c("lightblue", "pink"),
+        main = "Age vs Attrition",
+        xlab = "Attrition",
+        ylab = "Age")
+```
+
+**Insight:**  
+Employees who left tend to be **younger**. This suggests that **younger employees are more likely to leave**, possibly seeking career growth elsewhere.
+
+---
+
+### 🔹 5. Attrition Rate by Department
+**Question:** How does attrition vary across departments?
+
+```{r}
+ggplot(data, aes(x = Department, fill = Attrition)) +
+  geom_bar(position = "fill") +
+  labs(title = "Attrition Rate by Department", y = "Proportion") +
+  scale_y_continuous(labels = scales::percent)
+```
+
+**Insight:**  
+Attrition appears **higher in Sales** than in Research & Development. Departmental work culture or job type could influence turnover.
+
+---
+
+### 🔹 6. Daily Rate vs Distance From Home
+**Question:** Is there a relationship between salary (daily rate) and distance from home?
+
+```{r}
+plot(data$DailyRate, data$DistanceFromHome,
+     main = "Daily Rate vs Distance From Home",
+     xlab = "Daily Rate",
+     ylab = "Distance From Home",
+     col = "steelblue", pch = 19)
+```
+
+**Insight:**  
+No clear trend — distance from home does not strongly affect salary or attrition. It may not be a significant factor.
+
+---
+
+### 🔹 7. Age vs Daily Rate (Colored by Attrition)
+**Question:** How do age and salary relate to attrition?
+
+```{r}
+ggplot(data, aes(x = Age, y = DailyRate, color = Attrition)) +
+  geom_point() +
+  labs(title = "Age vs DailyRate coloured by Attrition")
+```
+
+**Insight:**  
+Employees with **lower daily rates** and **younger ages** are more likely to leave. Pay and experience might jointly influence attrition decisions.
+
+---
+
+### 🔹 8. Attrition by Department and Business Travel
+**Question:** How does business travel frequency relate to attrition across departments?
+
+```{r}
+ggplot(data, aes(x = Department, fill = BusinessTravel)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~Attrition) +
+  labs(title = "Attrition by Department and Business Travel")
+```
+
+**Insight:**  
+In **Sales**, employees who travel frequently show more attrition. **Non-traveling employees** in R&D are more stable, suggesting travel stress may contribute to turnover.
+
+---
+
+## 🧮 **Multivariate Summary**
+By looking at multiple variables together:
+- **Younger**, **lower-paid**, and **frequent travelers** in **Sales** tend to leave more often.  
+- **Distance from home** doesn’t significantly impact attrition.  
+- Different departments have distinct retention patterns.
+
+---
+
+## 🏁 **Final Conclusion**
+
+This EDA reveals key insights into employee attrition at IBM:
+
+- **Age & Salary** are major predictors — younger and lower-paid employees are more likely to leave.  
+- **Department & Travel** also matter — Sales staff and frequent travelers show higher turnover.  
+- **Distance from home** is not a strong factor.  
+
+### 💼 Business Recommendations:
+- Focus retention strategies on **younger, traveling employees** in Sales.  
+- Improve career growth and compensation plans to reduce turnover.  
+- Offer flexible or remote options for high-travel roles.
